@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>致我最好的闺蜜</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap');
+
+:root {
+  --text: #f2ede4;
+  --muted: rgba(242,237,228,.56);
+  --line: rgba(255,255,255,.15);
+  --glass: rgba(24,29,29,.42);
+  --gold: #e5c9a0;
+}
+* { box-sizing: border-box; }
+body {
+  margin:0;background:#111918;color:var(--text);
+  font-family:"Noto Serif SC","Songti SC",serif;
+}
+button,input,select {font:inherit}
+button {color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:2px solid var(--gold);outline-offset:3px;
+}
+button:active {transform:scale(.97)}
+.hidden {display:none!important}
+
+#stage {position:relative;min-height:100vh;overflow:hidden;background:#17201d}
+.bg {
+  position:fixed;inset:-3%;z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 78%,rgba(215,111,52,.22),transparent 32%),
+    radial-gradient(ellipse at 15% 20%,rgba(110,143,128,.18),transparent 38%),
+    linear-gradient(145deg,#293530,#111918 70%);
+  transition:filter 1s;
+}
+.bg::before,.bg::after {
+  content:"";position:absolute;width:55vw;height:55vw;max-width:800px;max-height:800px;
+  border-radius:50%;filter:blur(85px);opacity:.45;
+  animation:orb 18s ease-in-out infinite alternate;
+}
+.bg::before {
+  background:radial-gradient(circle,rgba(180,143,104,.25),transparent 68%);
+  top:-10%;left:-10%;
+}
+.bg::after {
+  background:radial-gradient(circle,rgba(94,135,126,.2),transparent 68%);
+  right:-15%;bottom:-20%;animation-delay:-8s;
+}
+@keyframes orb {
+  0%{transform:translate(-4%,2%) scale(.9)}
+  50%{transform:translate(8%,10%) scale(1.15)}
+  100%{transform:translate(-3%,-6%) scale(1.02)}
+}
+#stage[data-scene="rain"] .bg {
+  background:linear-gradient(145deg,#202d38,#121a23 75%);
+}
+#stage[data-scene="forest"] .bg {
+  background:linear-gradient(145deg,#20382d,#101d19 75%);
+}
+#stage[data-scene="city"] .bg {
+  background:linear-gradient(145deg,#242b42,#10131e 75%);
+}
+#stage[data-scene="rain"] .bg::before {background:radial-gradient(circle,rgba(127,170,198,.22),transparent 70%)}
+#stage[data-scene="forest"] .bg::before {background:radial-gradient(circle,rgba(96,157,109,.24),transparent 70%)}
+#stage[data-scene="city"] .bg::before {background:radial-gradient(circle,rgba(119,126,214,.23),transparent 70%)}
+
+#particles {
+  position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;
+}
+.vignette {
+  position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(ellipse,transparent 30%,rgba(0,0,0,.4) 100%);
+}
+.topbar {
+  position:relative;z-index:5;padding:25px 5vw;
+  display:flex;justify-content:space-between;align-items:center;
+  font:10px Arial,sans-serif;letter-spacing:3px;color:rgba(255,255,255,.62);
+}
+.brand {display:flex;align-items:center;gap:12px}
+.brand-icon {
+  width:27px;height:27px;border:1px solid rgba(229,201,160,.6);
+  border-radius:50%;display:grid;place-items:center;color:var(--gold);
+}
+
+/* 开场 */
+.intro {
+  position:fixed;inset:0;z-index:50;display:grid;place-items:center;
+  background:radial-gradient(ellipse at center,#35413b,#1c2622 60%,#111715);
+  transition:opacity 1s,visibility 1s;overflow:hidden;
+}
+.intro-ring {
+  position:absolute;width:min(75vw,700px);aspect-ratio:1;
+  border:1px solid rgba(229,201,160,.09);border-radius:50%;
+  box-shadow:0 0 0 60px rgba(229,201,160,.02),0 0 0 120px rgba(229,201,160,.012);
+}
+.intro-inner {position:relative;z-index:1;text-align:center;width:94vw}
+.eyebrow {font:10px Arial,sans-serif;letter-spacing:5px;color:#c8b89d}
+.intro h1 {font-size:clamp(28px,5vw,45px);font-weight:300;letter-spacing:7px;margin:20px 0 8px}
+.intro-sub {font-size:12px;letter-spacing:3px;color:var(--muted)}
+.detective {
+  position:relative;width:210px;height:255px;margin:18px auto 0;
+  animation:breathe 4s ease-in-out infinite;
+  filter:drop-shadow(0 20px 20px rgba(0,0,0,.25));
+}
+@keyframes breathe {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+.coat {
+  position:absolute;bottom:0;left:34px;width:142px;height:130px;
+  background:linear-gradient(90deg,#29362f,#526052,#303b33);
+  clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);
+}
+.head {
+  position:absolute;top:43px;left:69px;width:72px;height:82px;
+  border-radius:42% 42% 45% 45%;background:linear-gradient(90deg,#936d52,#d1a27f,#987153);
+}
+.hair {position:absolute;top:34px;left:60px;width:90px;height:39px;background:#3d3025;border-radius:50% 50% 15% 15%}
+.hat {
+  position:absolute;top:20px;left:46px;width:118px;height:34px;
+  background:linear-gradient(#80816d,#485447);border-radius:50% 50% 18% 18%;
+  transform:rotate(-4deg);
+}
+.hat::after {
+  content:"";position:absolute;bottom:-7px;left:-8px;width:134px;height:12px;
+  background:#424c3e;border-radius:50%;
+}
+.neck {position:absolute;top:112px;left:91px;width:28px;height:28px;background:#ad8263}
+.eye {position:absolute;top:86px;width:7px;height:4px;border-radius:50%;background:#302820}
+.eye.l {left:87px}.eye.r {left:119px}
+.moustache {
+  position:absolute;top:103px;left:87px;width:42px;height:12px;background:#594130;
+  clip-path:polygon(0 0,48% 35%,100% 0,82% 85%,53% 100%,45% 100%,15% 85%);
+}
+.arm {
+  position:absolute;top:132px;width:33px;height:83px;border-radius:20px;
+  background:linear-gradient(90deg,#29362f,#536052);
+}
+.arm.l {left:31px;transform:rotate(23deg)}
+.arm.r {right:31px;transform:rotate(-23deg)}
+.mini-book {
+  position:absolute;z-index:3;top:150px;left:57px;width:96px;height:66px;
+  transform:rotate(-7deg);background:#51392c;border:2px solid #b59a6c;
+  border-radius:3px;box-shadow:5px 8px 10px #1118;
+}
+.mini-book::before {content:"✦";position:absolute;inset:0;display:grid;place-items:center;color:#e3c38f;font-size:23px}
+.mini-book::after {
+  content:"";position:absolute;right:-7px;top:4px;width:8px;height:56px;
+  background:repeating-linear-gradient(#eee0c5 0 2px,#c9b99b 2px 3px);
+}
+.intro-hint {font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.7)}
+.open-btn {
+  margin-top:23px;padding:13px 30px;border:1px solid rgba(229,201,160,.5);
+  background:rgba(255,255,255,.045);backdrop-filter:blur(18px);
+  letter-spacing:3px;transition:.3s;
+}
+.open-btn:hover {background:rgba(229,201,160,.15);box-shadow:0 0 35px #dfbd8420}
+.intro-note {font-size:10px;letter-spacing:2px;color:#ffffff59;margin-top:18px}
+
+/* 第二页：雾化书页 */
+.book-screen {
+  position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  opacity:0;visibility:hidden;transition:opacity .8s,visibility .8s;overflow:hidden;
+  background:rgba(13,19,17,.65);backdrop-filter:blur(24px);
+}
+.book-screen.active {opacity:1;visibility:visible}
+.book-haze {
+  position:absolute;width:80vw;height:80vw;max-width:900px;max-height:900px;
+  border-radius:50%;filter:blur(100px);
+  background:conic-gradient(from 0deg,#8d9d8b44,#b7a2bf20,#d9b88633,#759d9633,#8d9d8b44);
+  animation:rotateHaze 20s linear infinite;
+}
+@keyframes rotateHaze {to{transform:rotate(360deg)}}
+.book-wrap {
+  position:relative;width:min(850px,90vw);perspective:1600px;
+  filter:drop-shadow(0 30px 65px #0006);
+  animation:bookFloat 6s ease-in-out infinite;
+}
+@keyframes bookFloat {50%{transform:translateY(-7px)}}
+.book-spread {
+  position:relative;display:grid;grid-template-columns:1fr 1fr;
+  min-height:430px;border-radius:15px;overflow:visible;
+}
+.page {
+  position:relative;overflow:hidden;padding:clamp(22px,5vw,55px);
+  background:linear-gradient(135deg,rgba(245,236,219,.94),rgba(220,210,191,.88));
+  color:#454237;backdrop-filter:blur(18px);
+  box-shadow:inset 0 0 50px rgba(93,75,51,.07);
+}
+.page:first-child {border-radius:15px 0 0 15px}
+.page:last-child {
+  border-radius:0 15px 15px 0;
+  background:linear-gradient(110deg,rgba(204,190,165,.93),rgba(242,233,215,.96) 18%);
+  transform-origin:left center;
+}
+.page:last-child::before {
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(55,43,30,.18),transparent 18%);
+}
+.page:last-child.turn {animation:pageTurn 1.6s cubic-bezier(.6,.05,.25,1) forwards}
+@keyframes pageTurn {
+  0%{transform:rotateY(0);filter:brightness(1)}
+  45%{filter:brightness(.72)}
+  100%{transform:rotateY(-170deg);filter:brightness(.88)}
+}
+.page-label {font:10px Arial,sans-serif;letter-spacing:4px;opacity:.58}
+.page h2 {font-weight:300;letter-spacing:5px;font-size:clamp(22px,4vw,34px);margin:28px 0}
+.page-copy {font-size:13px;line-height:2.5;letter-spacing:1px}
+.page-foot {position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:9px;letter-spacing:3px;opacity:.5}
+.two-people {position:absolute;bottom:28px;left:0;right:0;height:140px;display:flex;align-items:flex-end;justify-content:center;gap:18px}
+.person {width:53px;height:100px;background:#3e473d;border-radius:25px 25px 0 0;position:relative}
+.person::before {content:"";position:absolute;top:-34px;left:8px;width:37px;height:39px;border-radius:50%;background:inherit}
+.person:nth-child(2) {height:83px;background:#77604b}
+.page-note {position:absolute;bottom:7%;left:0;right:0;text-align:center;color:#ffffff9c;font-size:11px;letter-spacing:3px}
+
+/* 正式界面 */
+.room {
+  position:relative;z-index:5;opacity:0;visibility:hidden;
+  transition:opacity 1.2s,visibility 1.2s;min-height:100vh;
+}
+.room.active {opacity:1;visibility:visible}
+.room-header {
+  padding:75px 5vw 24px;display:flex;align-items:flex-end;
+  justify-content:space-between;gap:25px;flex-wrap:wrap;
+}
+.kicker {font:10px Arial,sans-serif;letter-spacing:4px;color:#d4c5ac}
+.room-title {font-size:clamp(27px,4vw,42px);font-weight:300;letter-spacing:4px;margin:13px 0}
+.room-sub {font-size:12px;color:var(--muted)}
+.scene-buttons {display:flex;gap:7px;flex-wrap:wrap}
+.glass-btn {
+  border:1px solid var(--line);background:rgba(255,255,255,.055);
+  backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);
+  padding:10px 14px;font-size:11px;letter-spacing:1px;
+  transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.glass-btn:hover {background:rgba(255,255,255,.13)}
+.glass-btn.active {border-color:#e5c9a080;background:#e5c9a01a;box-shadow:0 0 25px #e5c9a00d}
+.grid {
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;
+  padding:10px 5vw 35px;
+}
+.panel {
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.15);border-radius:20px;
+  backdrop-filter:blur(32px) saturate(135%);
+  -webkit-backdrop-filter:blur(32px) saturate(135%);
+  box-shadow:0 24px 80px #0002,inset 0 1px rgba(255,255,255,.08);
+}
+.panel::before {
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 40%,rgba(255,255,255,.015));
+}
+.focus-panel {padding:clamp(22px,4vw,40px);min-height:425px;display:flex;flex-direction:column}
+.small-kicker {font:10px Arial,sans-serif;letter-spacing:3px;color:var(--muted)}
+.timer {
+  width:min(250px,65vw);aspect-ratio:1;position:relative;margin:32px auto 22px;
+  display:grid;place-items:center;
+}
+.timer svg {position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.timer circle {fill:none;stroke:#ffffff1c;stroke-width:1.3}
+#progress {stroke:var(--gold);stroke-width:2;stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:0;transition:stroke-dashoffset .5s}
+.timer-center {position:relative;text-align:center}
+#mode {font-size:10px;letter-spacing:3px;color:var(--muted)}
+#time {font:300 clamp(40px,7vw,54px) Arial,sans-serif;letter-spacing:2px;margin:13px 0}
+#caption {font-size:11px;color:var(--muted)}
+.controls {display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.primary {background:#e5d4b8;color:#2b302c;border:0;padding:12px 23px;font-size:12px;letter-spacing:2px}
+.secondary {background:#ffffff09;border:1px solid var(--line);padding:11px 18px;font-size:12px}
+.focus-bottom {margin-top:auto;padding-top:25px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+select {background:#25302b;color:white;border:1px solid var(--line);padding:8px}
+
+/* 任务与垃圾桶 */
+.task-panel {padding:23px 19px;display:flex;flex-direction:column;min-height:425px}
+.task-head {display:flex;justify-content:space-between;align-items:center;gap:10px}
+.task-head h3 {font-size:17px;font-weight:400;letter-spacing:2px;margin:0}
+#taskCount {font:10px Arial,sans-serif;color:var(--muted)}
+.task-form {display:flex;gap:6px;margin:20px 0 15px}
+.task-form input {flex:1;min-width:0;background:#ffffff09;border:1px solid var(--line);padding:11px;color:white;font-size:12px}
+.task-form input::placeholder {color:#ffffff69}
+.task-form button {width:40px;border:1px solid var(--line);background:#ffffff0b;font-size:20px}
+#taskList {display:flex;flex-direction:column;gap:8px}
+.task-row {
+  display:flex;align-items:flex-start;gap:10px;padding:12px 10px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.075);
+  border-radius:9px;font-size:12px;line-height:1.7;position:relative;
+}
+.task-row input {margin-top:5px;accent-color:#dfc49a}
+.task-text {flex:1;overflow-wrap:anywhere}
+.delete-task {border:0;background:none;color:#ffffff72}
+.task-row.falling {animation:throwAway .65s ease-in forwards;pointer-events:none}
+@keyframes throwAway {
+  0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+  35%{transform:translate(18px,12px) rotate(13deg) scale(.8)}
+  100%{transform:translate(35px,170px) rotate(65deg) scale(.15);opacity:0}
+}
+.bin-area {margin-top:auto;padding-top:18px}
+.bin-head {display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.bin-label {font-size:10px;letter-spacing:2px;color:var(--muted)}
+#toggleTrash {border:0;background:none;color:var(--gold);font-size:11px;text-decoration:underline;text-underline-offset:4px}
+.bin {
+  position:relative;width:95px;height:75px;margin:auto;
+  border:1px solid #dfc49a70;border-top:0;
+  clip-path:polygon(4% 0,96% 0,82% 100%,18% 100%);
+  background:linear-gradient(90deg,#dfc49a08,#dfc49a24,#dfc49a08);
+}
+.bin::before {
+  content:"";position:absolute;left:-3px;right:-3px;top:0;height:6px;
+  border:1px solid #dfc49a90;border-radius:3px;
+}
+.bin::after {
+  content:"";position:absolute;top:18px;left:35%;height:38px;width:1px;
+  background:#dfc49a45;box-shadow:14px 0 #dfc49a45,28px 0 #dfc49a45;
+}
+.bin.wiggle {animation:binWiggle .5s ease}
+@keyframes binWiggle {30%{transform:rotate(-7deg)}70%{transform:rotate(7deg)}}
+#binCount {text-align:center;font:10px Arial,sans-serif;letter-spacing:2px;color:var(--muted);margin-top:8px}
+#trashList {margin-top:10px;max-height:180px;overflow:auto}
+.trash-row {display:flex;gap:7px;align-items:center;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:11px;color:#ffffffa8}
+.trash-row span {flex:1;overflow-wrap:anywhere}
+.restore-btn {border:1px solid var(--line);background:none;padding:5px 7px;font-size:10px}
+.empty {text-align:center;padding:14px 0;color:#ffffff67;font-size:11px}
+
+/* 环境音 */
+.soundbar {position:relative;z-index:5;padding:0 5vw 30px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+.sound-list {display:flex;gap:7px;flex-wrap:wrap}
+.sound-btn {display:flex;align-items:center;gap:8px}
+.sound-dot {width:6px;height:6px;border-radius:50%;background:#a4b4a1}
+.sound-btn.active .sound-dot {background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.volume {display:flex;align-items:center;gap:10px;font:10px Arial,sans-serif;letter-spacing:2px;color:var(--muted)}
+.volume input {width:85px;accent-color:var(--gold)}
+.footer {font-size:10px;color:#ffffff5e;letter-spacing:1px}
+
+/* 庆祝炸屏 */
+#celebration {
+  position:fixed;inset:0;z-index:100;pointer-events:none;
+  display:grid;place-items:center;opacity:0;visibility:hidden;
+  transition:opacity .35s,visibility .35s;
+}
+#celebration.show {opacity:1;visibility:visible}
+.celebrate-haze {
+  position:absolute;width:100vw;height:100vw;max-width:1000px;max-height:1000px;
+  border-radius:50%;background:radial-gradient(circle,#f5d8a52e,transparent 62%);
+  filter:blur(25px);transform:scale(.1);opacity:0;
+}
+#celebration.show .celebrate-haze {animation:blast .9s ease-out forwards}
+@keyframes blast {0%{transform:scale(.1);opacity:0}30%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+#celebrateCanvas {position:absolute;inset:0;width:100%;height:100%}
+.celebrate-message {
+  position:relative;text-align:center;opacity:0;transform:translateY(15px) scale(.9);
+  text-shadow:0 4px 35px #0007;
+}
+#celebration.show .celebrate-message {animation:congrats 1.1s .2s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes congrats {
+  0%{opacity:0;transform:translateY(15px) scale(.8);filter:blur(8px)}
+  65%{opacity:1;transform:translateY(0) scale(1.04);filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.celebrate-message h2 {font-weight:300;letter-spacing:8px;font-size:clamp(30px,6vw,55px);margin:0 0 14px}
+.celebrate-message p {font-size:12px;letter-spacing:3px;color:#f2e2c9}
+.celebrate-message small {font:10px Arial,sans-serif;letter-spacing:4px;color:#ffffff9c}
+#closeCelebration {
+  pointer-events:auto;margin-top:22px;border:1px solid #ffffff5c;
+  background:#ffffff0b;padding:10px 22px;letter-spacing:2px;font-size:11px;
+  backdrop-filter:blur(15px);
+}
+#toast {
+  position:fixed;z-index:120;bottom:25px;left:50%;
+  transform:translate(-50%,15px);opacity:0;pointer-events:none;
+  padding:12px 20px;background:#171e1bde;border:1px solid var(--line);
+  backdrop-filter:blur(20px);font-size:12px;transition:.3s;
+}
+#toast.show {opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:800px) {
+  .grid {grid-template-columns:1fr;padding-left:4vw;padding-right:4vw}
+  .room-header {padding-left:4vw;padding-right:4vw}
+  .soundbar {padding-left:4vw;padding-right:4vw}
+  .topbar {padding-left:4vw;padding-right:4vw}
+  .task-panel {min-height:350px}
+  .book-spread {min-height:390px}
+}
+@media(max-width:430px) {
+  .intro h1 {letter-spacing:4px}
+  .book-spread {min-height:370px}
+  .page {padding:18px}
+  .page h2 {letter-spacing:2px}
+  .page-copy {font-size:11px;line-height:2.2}
+  .two-people {gap:8px}
+  .person {width:37px;height:80px}
+  .person::before {width:29px;height:30px;left:4px;top:-26px}
+  .person:nth-child(2) {height:68px}
+  .scene-buttons {gap:5px}
+  .glass-btn {padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div id="stage" data-scene="fire">
+  <div class="bg"></div>
+  <canvas id="particles"></canvas>
+  <div class="vignette"></div>
+
+  <div class="topbar">
+    <div class="brand"><span class="brand-icon">W</span> OUR LITTLE WORLD</div>
+    <span>A QUIET PLACE TO BEGIN</span>
+  </div>
+
+  <!-- 开场 -->
+  <section class="intro" id="intro">
+    <div class="intro-ring"></div>
+    <div class="intro-inner">
+      <div class="eyebrow">A LETTER FOR MY BEST FRIEND</div>
+      <h1>致我最好的闺蜜</h1>
+      <div class="intro-sub">文楚伯 · 马玟轩</div>
+      <div class="detective" aria-label="抱着书的侦探形象">
+        <div class="coat"></div><div class="neck"></div>
+        <div class="head"></div><div class="hair"></div><div class="hat"></div>
+        <div class="eye l"></div><div class="eye r"></div><div class="moustache"></div>
+        <div class="arm l"></div><div class="arm r"></div><div class="mini-book"></div>
+      </div>
+      <div class="intro-hint">有些故事，值得慢慢翻开</div>
+      <button class="open-btn" id="openBook">翻开这本书　↗</button>
+      <div class="intro-note">建议佩戴耳机 · 点击后可开启环境音</div>
+    </div>
+  </section>
+
+  <!-- 第二页 -->
+  <section class="book-screen" id="bookScreen">
+    <div class="book-haze"></div>
+    <div class="book-wrap">
+      <div class="book-spread">
+        <div class="page">
+          <div class="page-label">CHAPTER 01 · US</div>
+          <h2>关于我们</h2>
+          <div class="page-copy">
+            世界很大，日子很长。<br>
+            这里留一小块安静的地方，<br>
+            给两个一起长大的人。<br><br>
+            可以学习，也可以休息。<br>
+            不必时刻优秀，<br>
+            只要认真走好今天。
+          </div>
+          <div class="page-foot">WEN CHUBO · MA WENXUAN</div>
+        </div>
+        <div class="page" id="turnPage">
+          <div class="page-label">A SMALL WORLD</div>
+          <h2>我们的故事</h2>
+          <div class="page-copy">愿每一个普通的日子，<br>都有一点值得期待的事。</div>
+          <div class="two-people"><div class="person"></div><div class="person"></div></div>
+          <div class="page-foot">TO BE CONTINUED</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-note">轻轻翻过这一页……</div>
+  </section>
+
+  <!-- 自习室 -->
+  <main class="room" id="room">
+    <header class="room-header">
+      <div>
+        <div class="kicker">OUR PRIVATE STUDY ROOM · 001</div>
+        <h1 class="room-title" id="roomTitle">今晚，围着篝火学习</h1>
+        <div class="room-sub" id="roomSub">把要做的事一件件完成，剩下的交给夜晚。</div>
+      </div>
+      <div class="scene-buttons">
+        <button class="glass-btn active" data-scene="fire">♨ 篝火</button>
+        <button class="glass-btn" data-scene="rain">☂ 雨天</button>
+        <button class="glass-btn" data-scene="forest">♧ 森林</button>
+        <button class="glass-btn" data-scene="city">⌁ 城市夜晚</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel focus-panel">
+        <div class="small-kicker">FOCUS SESSION · 专注时刻</div>
+        <div class="timer">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50"></circle>
+            <circle id="progress" cx="60" cy="60" r="50"></circle>
+          </svg>
+          <div class="timer-center">
+            <div id="mode">专注时间</div>
+            <div id="time">25:00</div>
+            <div id="caption">慢慢来，先做好眼前这一件</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="primary" id="start">开始专注</button>
+          <button class="secondary" id="reset">重新计时</button>
+          <button class="secondary" id="switchMode">切换休息</button>
+        </div>
+        <div class="focus-bottom">
+          <span id="sessions">今日完成 0 个专注时段</span>
+          <label>时长　
+            <select id="duration">
+              <option value="15">15 分钟</option>
+              <option value="25" selected>25 分钟</option>
+              <option value="40">40 分钟</option>
+              <option value="50">50 分钟</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <aside class="panel task-panel">
+        <div class="task-head"><h3>今日任务单</h3><span id="taskCount">0 项待办</span></div>
+        <form class="task-form" id="taskForm">
+          <input id="taskInput" maxlength="100" placeholder="写下一件要完成的事…" autocomplete="off">
+          <button type="submit" aria-label="添加任务">＋</button>
+        </form>
+        <div id="taskList"></div>
+        <div class="bin-area">
+          <div class="bin-head">
+            <div class="bin-label">完成的纸条，收进这里</div>
+            <button id="toggleTrash">打开垃圾桶</button>
+          </div>
+          <div class="bin" id="bin"></div>
+          <div id="binCount">0 张纸条</div>
+          <div id="trashList" class="hidden"></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="soundbar">
+      <div class="sound-list">
+        <button class="glass-btn sound-btn" data-sound="rain"><span class="sound-dot"></span>雨声</button>
+        <button class="glass-btn sound-btn" data-sound="forest"><span class="sound-dot"></span>森林白噪音</button>
+        <button class="glass-btn sound-btn" data-sound="fire"><span class="sound-dot"></span>篝火声</button>
+        <button class="glass-btn sound-btn" data-sound="city"><span class="sound-dot"></span>城市环境音</button>
+        <button class="glass-btn sound-btn" data-sound="music"><span class="sound-dot"></span>轻音乐</button>
+      </div>
+      <div class="volume">
+        <span>VOLUME</span><input id="volume" type="range" min="0" max="100" value="28">
+        <button class="glass-btn" id="mute">关闭声音</button>
+      </div>
+      <div class="footer">给今天一点安静，也给明天留一点期待。</div>
+    </div>
+  </main>
+</div>
+
+<!-- 庆祝动画 -->
+<div id="celebration">
+  <div class="celebrate-haze"></div>
+  <canvas id="celebrateCanvas"></canvas>
+  <div class="celebrate-message">
+    <small>A LITTLE VICTORY</small>
+    <h2>恭喜你！</h2>
+    <p id="congratsText">又认真完成了一件事。</p>
+    <button id="closeCelebration">收下这份小小的成就</button>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const stage = $("stage");
+let toastTimer;
+function toast(msg) {
+  $("toast").textContent = msg;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>$("toast").classList.remove("show"),2200);
+}
+
+/* 书本动画 */
+let entered=false;
+$("openBook").onclick=()=>{
+  if(entered)return;
+  entered=true;
+  $("bookScreen").classList.add("active");
+  setTimeout(()=>$("turnPage").classList.add("turn"),350);
+  setTimeout(()=>{
+    $("intro").style.opacity="0";
+    $("intro").style.visibility="hidden";
+    $("room").classList.add("active");
+  },1600);
+  setTimeout(()=>{
+    $("bookScreen").style.opacity="0";
+    $("bookScreen").style.visibility="hidden";
+    setTimeout(()=>$("bookScreen").style.display="none",900);
+    toast("欢迎来到你们的小世界");
+  },2600);
+};
+
+/* 环境切换 */
+const scenes={
+  fire:["今晚，围着篝火学习","把要做的事一件件完成，剩下的交给夜晚。"],
+  rain:["雨落在窗上的夜晚","让雨声隔开喧闹，把注意力留给自己。"],
+  forest:["森林深处的自习室","树影、薄雾和一点点安静的光。"],
+  city:["城市还没有睡","窗外车流不息，窗内只专注眼前。"]
+};
+document.querySelectorAll("[data-scene]").forEach(btn=>{
+  if(!btn.classList.contains("glass-btn"))return;
+  btn.onclick=()=>{
+    const s=btn.dataset.scene;
+    stage.dataset.scene=s;
+    document.querySelectorAll("[data-scene].glass-btn").forEach(b=>b.classList.toggle("active",b===btn));
+    $("roomTitle").textContent=scenes[s][0];
+    $("roomSub").textContent=scenes[s][1];
+  };
+});
+
+/* 背景粒子 */
+const canvas=$("particles"),ctx=canvas.getContext("2d");
+let W,H,dpr,particles=[];
+function resize(){
+  dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+"px";canvas.style.height=H+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener("resize",resize);resize();
+function particle(){
+  const s=stage.dataset.scene;
+  return {
+    x:Math.random()*W,
+    y:s==="fire"?H*(.72+Math.random()*.25):Math.random()*H,
+    vx:(Math.random()-.5)*(s==="rain"?.2:.5),
+    vy:s==="fire"?-(.5+Math.random()*1.6):s==="rain"?3+Math.random()*5:-(.1+Math.random()*.35),
+    life:1,size:1+Math.random()*2,
+    color:s==="fire"?"245,163,85":s==="rain"?"178,205,224":s==="city"?"255,194,124":"175,208,166"
+  };
+}
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  const s=stage.dataset.scene;
+  if(particles.length<110 && Math.random()<(s==="fire"?.55:.12))particles.push(particle());
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.life-=s==="fire"?.006:.002;
+    ctx.beginPath();
+    ctx.fillStyle=`rgba(${p.color},${Math.max(0,p.life)*.65})`;
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+  });
+  particles=particles.filter(p=>p.life>0&&p.y>-20&&p.x>-20&&p.x<W+20);
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* 任务存储：保留旧版本数据 */
+const KEY="bestFriendsStudyRoom_v3";
+let tasks=[];
+try{
+  let data=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(!data){
+    data=JSON.parse(localStorage.getItem("bestFriendsStudyRoom_v2")||
+                    localStorage.getItem("bestFriendsStudyRoom")||"null");
+  }
+  if(data&&Array.isArray(data.tasks)){
+    tasks=data.tasks.map(t=>({
+      id:t.id||Date.now()+Math.random(),
+      text:t.text||t.title||"",
+      done:!!t.done
+    }));
+  }
+}catch(e){tasks=[]}
+let trashOpen=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify({tasks}))}catch(e){toast("浏览器无法保存任务")}}
+
+function render(){
+  const list=$("taskList"),trash=$("trashList");
+  list.replaceChildren();trash.replaceChildren();
+  const pending=tasks.filter(t=>!t.done);
+  const completed=tasks.filter(t=>t.done);
+  $("taskCount").textContent=pending.length+" 项待办";
+  $("binCount").textContent=completed.length+" 张纸条";
+
+  if(!pending.length){
+    const empty=document.createElement("div");
+    empty.className="empty";empty.textContent="今天的待办已经清空了。";list.append(empty);
+  }
+  pending.forEach(task=>{
+    const row=document.createElement("div");row.className="task-row";
+    const check=document.createElement("input");check.type="checkbox";
+    check.setAttribute("aria-label","完成任务："+task.text);
+    const text=document.createElement("span");text.className="task-text";text.textContent=task.text;
+    const del=document.createElement("button");del.className="delete-task";del.textContent="×";
+    del.setAttribute("aria-label","删除任务");
+
+    check.onchange=()=>{
+      row.classList.add("falling");
+      $("bin").classList.remove("wiggle");void $("bin").offsetWidth;$("bin").classList.add("wiggle");
+      // 先播放纸团飞入垃圾桶，再正式标记完成。
+      setTimeout(()=>{
+        task.done=true;save();render();
+        celebrate(task.text);
+      },560);
+    };
+    del.onclick=()=>{
+      if(!confirm("确定删除这项任务吗？"))return;
+      tasks=tasks.filter(t=>t.id!==task.id);save();render();
+    };
+    row.append(check,text,del);list.append(row);
+  });
+
+  if(!completed.length){
+    const empty=document.createElement("div");empty.className="empty";
+    empty.textContent="垃圾桶里还没有纸条。";trash.append(empty);
+  }
+  completed.slice().reverse().forEach(task=>{
+    const row=document.createElement("div");row.className="trash-row";
+    const text=document.createElement("span");text.textContent="♧ "+task.text;
+    const restore=document.createElement("button");restore.className="restore-btn";restore.textContent="恢复";
+    restore.onclick=()=>{task.done=false;save();render();toast("这张纸条已经恢复。")};
+    const del=document.createElement("button");del.className="restore-btn";del.textContent="删除";
+    del.onclick=()=>{
+      if(!confirm("永久删除这张已完成的纸条？"))return;
+      tasks=tasks.filter(t=>t.id!==task.id);save();render();
+    };
+    row.append(text,restore,del);trash.append(row);
+  });
+  trash.classList.toggle("hidden",!trashOpen);
+  $("toggleTrash").textContent=trashOpen?"收起垃圾桶":"打开垃圾桶";
+}
+$("taskForm").onsubmit=e=>{
+  e.preventDefault();
+  const input=$("taskInput"),text=input.value.trim();
+  if(!text){toast("先写下一件要完成的事。");return}
+  tasks.push({id:Date.now()+Math.random(),text,done:false});
+  input.value="";save();render();
+};
+$("toggleTrash").onclick=()=>{trashOpen=!trashOpen;render()};
+render();
+
+/* 炸屏庆祝：粒子从中心扩散，带柔和光晕 */
+const celebration=$("celebration");
+const cc=$("celebrateCanvas"),cx=cc.getContext("2d");
+let confetti=[],celebrateFrame=0;
+function resizeCelebrate(){
+  const ratio=Math.min(devicePixelRatio||1,2);
+  cc.width=innerWidth*ratio;cc.height=innerHeight*ratio;
+  cc.style.width=innerWidth+"px";cc.style.height=innerHeight+"px";
+  cx.setTransform(ratio,0,0,ratio,0,0);
+}
+resizeCelebrate();addEventListener("resize",resizeCelebrate);
+
+function celebrate(taskText){
+  $("congratsText").textContent=taskText
+    ?"「"+taskText+"」完成了。今天的你，值得一个小小的庆祝。"
+    :"又认真完成了一件事。";
+  confetti=[];
+  const count=190;
+  for(let i=0;i<count;i++){
+    const a=Math.random()*Math.PI*2;
+    const speed=2+Math.random()*10;
+    confetti.push({
+      x:innerWidth/2,y:innerHeight/2,
+      vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
+      size:2+Math.random()*4,
+      life:1,decay:.008+Math.random()*.009,
+      hue:[35,42,48,155,190,220,285][Math.floor(Math.random()*7)],
+      shape:Math.random()>.5?"circle":"rect",
+      rotation:Math.random()*6.28,spin:(Math.random()-.5)*.2
+    });
+  }
+  celebration.classList.add("show");
+  cancelAnimationFrame(celebrateFrame);
+  const start=performance.now();
+  function draw(now){
+    cx.clearRect(0,0,innerWidth,innerHeight);
+    confetti.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      p.vx*=.985;p.vy=p.vy*.985+.045;
+      p.rotation+=p.spin;p.life-=p.decay;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.rotation);
+      cx.globalAlpha=Math.max(0,p.life);
+      cx.fillStyle=`hsla(${p.hue},65%,75%,1)`;
+      if(p.shape==="circle"){
+        cx.beginPath();cx.arc(0,0,p.size,0,Math.PI*2);cx.fill();
+      }else{
+        cx.fillRect(-p.size,-p.size/2,p.size*2,p.size);
+      }
+      cx.restore();
+    });
+    if(now-start<2600)celebrateFrame=requestAnimationFrame(draw);
+    else cx.clearRect(0,0,innerWidth,innerHeight);
+  }
+  celebrateFrame=requestAnimationFrame(draw);
+}
+$("closeCelebration").onclick=()=>celebration.classList.remove("show");
+
+/* 番茄钟 */
+let duration=1500,remaining=1500,isBreak=false,running=false,interval=null,sessions=0;
+function updateTimer(){
+  $("time").textContent=String(Math.floor(remaining/60)).padStart(2,"0")+":"+String(remaining%60).padStart(2,"0");
+  $("mode").textContent=isBreak?"休息时间":"专注时间";
+  $("caption").textContent=isBreak?"喝口水，活动一下，再继续。":"慢慢来，先做好眼前这一件";
+  $("progress").style.strokeDashoffset=314*(1-remaining/duration);
+  $("start").textContent=running?"暂停计时":"开始专注";
+  $("sessions").textContent=`今日完成 ${sessions} 个专注时段`;
+  document.title=$("time").textContent+" · 致我最好的闺蜜";
+}
+function stopTimer(){running=false;clearInterval(interval);interval=null;updateTimer()}
+$("start").onclick=()=>{
+  if(running){stopTimer();return}
+  running=true;updateTimer();
+  interval=setInterval(()=>{
+    remaining--;
+    if(remaining<=0){
+      remaining=0;stopTimer();
+      if(!isBreak)sessions++;
+      updateTimer();
+      toast(isBreak?"休息结束，可以继续了。":"这一段专注完成了。");
+      return;
+    }
+    updateTimer();
+  },1000);
+};
+$("reset").onclick=()=>{stopTimer();remaining=duration;updateTimer()};
+$("switchMode").onclick=()=>{
+  stopTimer();isBreak=!isBreak;
+  duration=isBreak?300:Number($("duration").value)*60;
+  remaining=duration;updateTimer();
+};
+$("duration").onchange=()=>{
+  if(isBreak)return;
+  stopTimer();duration=Number($("duration").value)*60;remaining=duration;updateTimer();
+};
+updateTimer();
+
+/* 环境声音：使用 Web Audio 合成，不依赖外部音频文件 */
+let audio=null,master=null,nodes=[],activeSound=null,muted=false;
+function ensureAudio(){
+  if(!audio){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC){toast("当前浏览器不支持环境音");return false}
+    audio=new AC();master=audio.createGain();master.connect(audio.destination);
+  }
+  if(audio.state==="suspended")audio.resume();
+  return true;
+}
+function stopSound(){
+  nodes.forEach(n=>{try{n.stop?.();n.disconnect?.()}catch(e){}});
+  nodes=[];activeSound=null;
+  document.querySelectorAll(".sound-btn").forEach(b=>b.classList.remove("active"));
+}
+function noiseSound(kind){
+  const buffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate);
+  const data=buffer.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
+  const src=audio.createBufferSource();src.buffer=buffer;src.loop=true;
+  const filter=audio.createBiquadFilter();filter.type="lowpass";
+  filter.frequency.value=kind==="rain"?1400:kind==="forest"?650:kind==="fire"?850:400;
+  const gain=audio.createGain();
+  gain.gain.value=kind==="rain"?.2:kind==="forest"?.08:kind==="fire"?.13:.1;
+  src.connect(filter);filter.connect(gain);gain.connect(master);src.start();
+  nodes.push(src,filter,gain);
+}
+function musicSound(){
+  [220,261.63,329.63].forEach((f,i)=>{
+    const osc=audio.createOscillator(),gain=audio.createGain();
+    osc.type="sine";osc.frequency.value=f;gain.gain.value=[.018,.012,.008][i];
+    osc.connect(gain);gain.connect(master);osc.start();nodes.push(osc,gain);
+  });
+}
+document.querySelectorAll(".sound-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    const s=btn.dataset.sound;
+    if(activeSound===s){stopSound();return}
+    if(!ensureAudio())return;
+    stopSound();activeSound=s;
+    if(s==="music")musicSound();else noiseSound(s);
+    btn.classList.add("active");muted=false;$("mute").textContent="关闭声音";
+    master.gain.setTargetAtTime(Number($("volume").value)/100,audio.currentTime,.08);
+  };
+});
+$("volume").oninput=()=>{
+  if(master)master.gain.setTargetAtTime(muted?0:Number($("volume").value)/100,audio.currentTime,.05);
+};
+$("mute").onclick=()=>{
+  if(!ensureAudio())return;
+  muted=!muted;
+  master.gain.setTargetAtTime(muted?0:Number($("volume").value)/100,audio.currentTime,.05);
+  $("mute").textContent=muted?"开启声音":"关闭声音";
+};
+})();
+</script>
+</body>
+</html>
